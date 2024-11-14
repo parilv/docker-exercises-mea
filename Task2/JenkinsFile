@@ -3,21 +3,36 @@ pipeline {
     environment {
         dockerUserName="chrisreeves1"
         MYSQL_ROOT_PASSWORD=credentials('MYSQL_ROOT_PASSWORD')
+        DOCKER_HUB_PAT=credentials('DOCKER_HUB_PAT')
     }
     stages {
         stage('Build mysql') {
             steps {               
                 dir('Task2'){
-                    sh 'docker build -t trio-task-mysql:5.7 db'
+                    sh 'docker build -t ${DOCKER_HUB_PAT_USR}/trio-task-mysql:5.7 db'
                 }                    
             }
         }
         stage('Build flask') {
             steps {               
                 dir('Task2'){
-                    sh 'docker build -t trio-task-flask-app:latest flask-app'
+                    sh 'docker build -t ${DOCKER_HUB_PAT_USR}/trio-task-flask-app:latest flask-app'
                 }                    
             }
+        }
+        stage('Push Images'){
+            steps {
+                sh 'docker login -u ${DOCKER_HUB_PAT_USR} -p ${DOCKER_HUB_PAT_PSW}'
+                sh 'docker push ${DOCKER_HUB_PAT_USR}/trio-task-mysql:5.7'
+                sh 'docker push ${DOCKER_HUB_PAT_USR}/trio-task-flask-app:latest'
+                sh 'docker logout'
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker rm -f $(docker ps -aq) || sleep 1'
+            sh 'docker system prune'
         }
     }
 }
