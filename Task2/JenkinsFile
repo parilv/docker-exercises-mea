@@ -5,14 +5,18 @@ pipeline {
         MYSQL_ROOT_PASSWORD=credentials('MYSQL_ROOT_PASSWORD')
     }
     stages {
-        stage('Build') {
-            steps {
-                script {
-                    dir('Task2'){
-                        sh 'sh deploy.sh'
-                    }
-                    
-                }
+        stage('Build mysql') {
+            steps {               
+                dir('Task2'){
+                    sh 'docker build -t trio-task-mysql:5.7 db'
+                }                    
+            }
+        }
+        stage('Build flask') {
+            steps {               
+                dir('Task2'){
+                    sh 'docker build -t trio-task-flask-app:latest flask-app'
+                }                    
             }
         }
     }

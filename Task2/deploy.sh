@@ -5,9 +5,10 @@ docker rm -f $(docker ps -qa)
 docker network create trio-task-network
 #create a volume
 docker volume create new-volume
+
 # build flask and mysql
-docker build -t trio-task-mysql:5.7 db
-docker build -t trio-task-flask-app:latest flask-app
+#docker build -t trio-task-mysql:5.7 db
+#docker build -t trio-task-flask-app:latest flask-app
 # run mysql container
 docker run -d \
     -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
