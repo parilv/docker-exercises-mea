@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         dockerUserName="chrisreeves1"
+        MYSQL_ROOT_PASSWORD=credentials('MYSQL_ROOT_PASSWORD')
     }
     stages {
         stage('Build') {
